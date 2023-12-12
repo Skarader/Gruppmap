@@ -6,20 +6,15 @@ function createEnemy(amount) {
   for (let i = 0; i < amount; i++) {
     let xPosition;
     if (Math.random() < 0.5) {
-      // Random x outside the canvas horizontally
       xPosition = Math.random() < 0.5 ? -50 : 1050;
     } else {
-      // Random x inside the canvas horizontally
       xPosition = Math.random() * canvas.width;
     }
 
-    // Generate random y position
     let yPosition;
     if (xPosition > -50 && xPosition < 1050) {
-      // Random y outside the canvas vertically
       yPosition = Math.random() < 0.5 ? -50 : 850;
     } else {
-      // Random y inside the canvas vertically
       yPosition = Math.random() * (canvas.height - 50);
     }
 
@@ -28,7 +23,7 @@ function createEnemy(amount) {
       y: yPosition,
       width: 30,
       height: 30,
-      speed: 400,
+      speed: 40,
       color: "red",
     };
     enemies.push(newEnemy);
@@ -48,7 +43,7 @@ function enemyMovement(deltaTime) {
     let directionY = player.y - enemy.y;
     let distance = Math.sqrt(directionX * directionX + directionY * directionY);
 
-    if (distance <= 30) {
+    if (distance <= 3000) {
       directionX /= distance;
       directionY /= distance;
 
@@ -85,6 +80,20 @@ function checkCollision() {
         resolveEnemyOverlap(enemy, enemy2);
       }
     }
+    for (let l = 0; l < player.bullets.length; l++) {
+      const playerBullet = player.bullets[l];
+
+      if (
+        playerBullet.x < enemy.x + enemy.width &&
+        playerBullet.x + playerBullet.width > enemy.x &&
+        playerBullet.y < enemy.y + enemy.height &&
+        playerBullet.y + playerBullet.height > enemy.y
+      ) {
+        enemies.splice(i, 1);
+        player.bullets.splice(l, 1);
+        createEnemy(1);
+      }
+    }
   }
 }
 
@@ -117,4 +126,5 @@ export {
   enemyMovement,
   checkCollision,
   resolveEnemyOverlap,
+  enemies,
 };

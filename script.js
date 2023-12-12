@@ -1,14 +1,21 @@
 // prettier-ignore
-import { drawPlayer, updatePlayerPosition, updateMousePosition } from "./player.js";
-import { keyPressed, keyReleased } from "./eventListeners.js";
+import { drawPlayer, updatePlayerPosition, updateMousePosition, drawBullet, updateBullets, } from "./player.js";
+import {
+  keyPressed,
+  keyReleased,
+  mousePressed,
+  mouseReleased,
+} from "./eventListeners.js";
 //prettier-ignore
-import { createEnemy, drawEnemy, enemyMovement, checkCollision } from "./enemy.js";
+import { createEnemy, drawEnemy, enemyMovement, checkCollision, } from "./enemy.js";
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
 let lastTime;
 
+document.addEventListener("mousedown", mousePressed);
+document.addEventListener("mouseup", mouseReleased);
 document.addEventListener("mousemove", updateMousePosition);
 document.addEventListener("keydown", keyPressed);
 document.addEventListener("keyup", keyReleased);
@@ -23,6 +30,8 @@ function gameLoop() {
   drawEnemy(ctx);
   enemyMovement(deltaTime);
   checkCollision();
+  updateBullets();
+  drawBullet(ctx);
   requestAnimationFrame(gameLoop);
 }
 

@@ -1,4 +1,4 @@
-import { player } from "./player.js";
+import { player, shootbullet } from "./player.js";
 
 function keyPressed(e) {
   switch (e.key) {
@@ -12,6 +12,18 @@ function keyPressed(e) {
       player.left = true;
       break;
     case "ArrowRight":
+      player.right = true;
+      break;
+    case "w":
+      player.up = true;
+      break;
+    case "s":
+      player.down = true;
+      break;
+    case "a":
+      player.left = true;
+      break;
+    case "d":
       player.right = true;
       break;
   }
@@ -30,7 +42,32 @@ function keyReleased(e) {
     case "ArrowRight":
       player.right = false;
       break;
+    case "w":
+      player.up = false;
+      break;
+    case "s":
+      player.down = false;
+      break;
+    case "a":
+      player.left = false;
+      break;
+    case "d":
+      player.right = false;
+      break;
   }
 }
 
-export { keyPressed, keyReleased };
+function mousePressed(e) {
+  if (e.type === "mousedown") {
+    player.shot = true;
+    shootbullet();
+  }
+}
+
+function mouseReleased(e) {
+  if (e.type === "mouseup") {
+    player.shot = false;
+  }
+}
+
+export { keyPressed, keyReleased, mousePressed, mouseReleased };
