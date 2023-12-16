@@ -107,6 +107,13 @@ function checkCollision() {
       player.y + player.height > enemy.y
     ) {
       enemies.splice(i, 1);
+
+      let dmgSound = new Audio();
+      dmgSound.src = "/Sound/damageSound.mp3";
+      dmgSound.volume = 0.2;
+      dmgSound.addEventListener("canplaythrough", function () {
+        dmgSound.play();
+      });
       player.hp -= 10;
 
       createEnemy(1);

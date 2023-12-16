@@ -63,7 +63,7 @@ function mousePressed(e) {
 
     let gunSound = new Audio("Sound/gunSound.mp3");
     gunSound.volume = 0.2;
-    gunSound.addEventListener('canplaythrough', function() {
+    gunSound.addEventListener("canplaythrough", function () {
       gunSound.play();
     });
 

@@ -5,25 +5,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
-    <script type="module" src="script.js" defer>
+    <script type="module" src="scripts/script.js" defer>
     </script>
     <title>COLLISION GAME</title>
 </head>
 
 <body>
-    <canvas id="canvas" width="1000" height="800"></canvas>
 
     <div id="Startmenu">
-    <h1> Spoky gameee!</h1>
-        <button id="startKnapp">start</button>
+        <h1> Spoky gameee!</h1>
+        <div class="level-button-container">
+            <button class="level" id="normal">Normal</button>
+            <button class="level" id="hard">Hard</button>
+            <button class="level" id="extreme">Extreme</button>
+        </div>
+        <button id="startKnapp">Start Game</button>
 
     </div>
 
     <div id="game-over">
         <h1>Game Over!</h1>
-        <button id="restart-btn">Restart</button>
+        <button id="restart-btn">Restart Game</button>
     </div>
-    <script src="script.js"></script>
+
+
+
+    <canvas id="canvas" width="1000" height="800"></canvas>
 
 </body>
 

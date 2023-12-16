@@ -15,7 +15,6 @@ body {
 
 #canvas {
   border: 1px solid;
-  cursor: none;
 }
 
 #Startmenu {
@@ -40,6 +39,42 @@ body {
   color: green;
   font-size: 2rem;
   cursor: pointer;
+}
+#startKnapp:hover {
+  scale: 1.1;
+  font-weight: bold;
+}
+
+.level-button-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.level {
+  padding: 10px 20px;
+  background-color: aqua;
+  border: none;
+  box-shadow: 5px 5px 5px;
+  color: whitesmoke;
+  font-size: 2rem;
+  cursor: pointer;
+  margin: 50px 20px;
+}
+.normal-level {
+  scale: 1.1;
+  font-weight: bold;
+  color: green;
+}
+.hard-level {
+  scale: 1.1;
+  font-weight: bold;
+  color: green;
+}
+.extreme-level {
+  scale: 1.1;
+  font-weight: bold;
+  color: green;
 }
 
 #game-over {
