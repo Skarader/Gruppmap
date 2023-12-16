@@ -1,6 +1,7 @@
 import { player } from "./player.js";
 
 let enemies = [];
+let enemyImg;
 
 function createEnemy(amount) {
   for (let i = 0; i < amount; i++) {
@@ -21,23 +22,32 @@ function createEnemy(amount) {
     const newEnemy = {
       x: xPosition,
       y: yPosition,
-      width: 30,
-      height: 30,
-      speed: 40,
-      color: "red",
+      width: 40,
+      height: 40,
+      speed: 50,
     };
     enemies.push(newEnemy);
   }
 }
 
 function drawEnemy(ctx) {
-  for (const enemy of enemies) {
-    ctx.fillStyle = enemy.color;
-    ctx.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
-  }
+  // for (const enemy of enemies) {
+  // draw emeny test
+  enemyImg = new Image();
+  enemyImg.src = "./pictures/Enemyimg.png";
+  //ctx.drawImage(enemyImg, enemy.x, enemy.y, enemy.width, enemy.height);
+
+  // }
+  ctx.fillStyle = "black";
+  ctx.font = "30px serif";
+  ctx.fillText("Score: " + player.scoreValue, 10, 60);
+
+  ctx.fillStyle = "black";
+  ctx.font = "30px serif";
+  ctx.fillText("Hp: " + player.hp, 10, 90);
 }
 
-function enemyMovement(deltaTime) {
+function enemyMovement(deltaTime, ctx) {
   for (const enemy of enemies) {
     let directionX = player.x - enemy.x;
     let directionY = player.y - enemy.y;
@@ -47,8 +57,41 @@ function enemyMovement(deltaTime) {
       directionX /= distance;
       directionY /= distance;
 
+      if (player.scoreValue >= 5 && player.scoreValue < 10) {
+        enemy.speed = 100;
+      } else if (player.scoreValue >= 10 && player.scoreValue < 20) {
+        enemy.speed = 200;
+      } else if (player.scoreValue >= 20 && player.scoreValue < 30) {
+        enemy.speed = 300;
+      } else if (player.scoreValue >= 30 && player.scoreValue < 40) {
+        enemy.speed = 350;
+      } else if (player.scoreValue >= 40 && player.scoreValue < 50) {
+        enemy.speed = 400;
+      } else if (player.scoreValue >= 50 && player.scoreValue < 60) {
+        enemy.speed = 450;
+      } else if (player.scoreValue >= 60 && player.scoreValue < 70) {
+        enemy.speed = 500;
+      }
+
       enemy.x += directionX * enemy.speed * deltaTime;
       enemy.y += directionY * enemy.speed * deltaTime;
+
+      let angle = Math.atan2(directionY, directionX);
+
+      //Behvös denna? (raden nedanför)
+      //let degrees = angle * (180/Math.PI);
+
+      ctx.save();
+      ctx.translate(enemy.x + enemy.width / 2, enemy.y + enemy.height / 2);
+      ctx.rotate(angle + 1.5 * Math.PI);
+      ctx.drawImage(
+        enemyImg,
+        -enemy.width / 2,
+        -enemy.height / 2,
+        enemy.width,
+        enemy.height
+      );
+      ctx.restore();
     }
   }
 }
@@ -64,6 +107,7 @@ function checkCollision() {
       player.y + player.height > enemy.y
     ) {
       enemies.splice(i, 1);
+      player.hp -= 10;
 
       createEnemy(1);
     }
@@ -92,6 +136,7 @@ function checkCollision() {
         enemies.splice(i, 1);
         player.bullets.splice(l, 1);
         createEnemy(1);
+        player.scoreValue++;
       }
     }
   }
@@ -111,6 +156,7 @@ function resolveEnemyOverlap(enemy, enemy2) {
 
   if (overlapX < overlapY) {
     const moveBy = overlapX / 2;
+
     enemy.x -= moveBy;
     enemy2.x += moveBy;
   } else {
