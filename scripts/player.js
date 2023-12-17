@@ -7,7 +7,7 @@ const player = {
   right: false,
   up: false,
   down: false,
-  speed: 5,
+  speed: 500,
   hp: 10,
   scoreValue: 0,
   bullets: [],
@@ -86,8 +86,6 @@ function drawPlayer(ctx) {
     ctx.fill();
     ctx.closePath();
   }
-
-  drawBullet(ctx);
 }
 
 function updateMousePosition(e) {
@@ -95,16 +93,18 @@ function updateMousePosition(e) {
   mouseY = e.pageY - canvas.getBoundingClientRect().top;
 }
 
-function updatePlayerPosition() {
-  if (player.up && player.y > player.height / 2 - 25) player.y -= player.speed;
+function updatePlayerPosition(deltaTime) {
+  if (player.up && player.y > player.height / 2 - 25)
+    player.y -= player.speed * deltaTime;
   if (player.down && player.y + player.height / 2 + 25 < canvas.height)
-    player.y += player.speed;
-  if (player.left && player.x > player.width / 2 - 25) player.x -= player.speed;
+    player.y += player.speed * deltaTime;
+  if (player.left && player.x > player.width / 2 - 25)
+    player.x -= player.speed * deltaTime;
   if (player.right && player.x + player.width / 2 + 25 < canvas.width)
-    player.x += player.speed;
+    player.x += player.speed * deltaTime;
 }
 
-function drawBullet(ctx) {
+function drawBullet(ctx, deltaTime) {
   player.bullets.forEach((bullet) => {
     const directionX = mouseX - player.x;
     const directionY = mouseY - player.y;
@@ -117,8 +117,8 @@ function drawBullet(ctx) {
     const normalizedDirectionX = directionX / distance;
     const normalizedDirectionY = directionY / distance;
 
-    bullet.x += normalizedDirectionX * bullet.speed;
-    bullet.y += normalizedDirectionY * bullet.speed;
+    bullet.x += normalizedDirectionX * bullet.speed * deltaTime;
+    bullet.y += normalizedDirectionY * bullet.speed * deltaTime;
 
     ctx.fillStyle = bullet.color;
     ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);

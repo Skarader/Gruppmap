@@ -57,22 +57,6 @@ function enemyMovement(deltaTime, ctx) {
       directionX /= distance;
       directionY /= distance;
 
-      if (player.scoreValue >= 5 && player.scoreValue < 10) {
-        enemy.speed = 100;
-      } else if (player.scoreValue >= 10 && player.scoreValue < 20) {
-        enemy.speed = 200;
-      } else if (player.scoreValue >= 20 && player.scoreValue < 30) {
-        enemy.speed = 300;
-      } else if (player.scoreValue >= 30 && player.scoreValue < 40) {
-        enemy.speed = 350;
-      } else if (player.scoreValue >= 40 && player.scoreValue < 50) {
-        enemy.speed = 400;
-      } else if (player.scoreValue >= 50 && player.scoreValue < 60) {
-        enemy.speed = 450;
-      } else if (player.scoreValue >= 60 && player.scoreValue < 70) {
-        enemy.speed = 500;
-      }
-
       enemy.x += directionX * enemy.speed * deltaTime;
       enemy.y += directionY * enemy.speed * deltaTime;
 

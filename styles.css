@@ -45,6 +45,15 @@ body {
   font-weight: bold;
 }
 
+#player-name {
+  position: relative;
+  top: 10px;
+  width: 500px;
+  padding: 10px;
+  text-align: center;
+  font-size: 1.5rem;
+}
+
 .level-button-container {
   display: flex;
   justify-content: space-between;
@@ -92,6 +101,7 @@ body {
 }
 
 #restart-btn {
+  width: 240px;
   padding: 10px 20px;
   background-color: aqua;
   border: none;
@@ -99,4 +109,17 @@ body {
   color: green;
   font-size: 2rem;
   cursor: pointer;
+  margin: 15px;
+}
+
+#new-game-btn {
+  width: 240px;
+  padding: 10px 20px;
+  background-color: aqua;
+  border: none;
+  box-shadow: 5px 5px 5px;
+  color: green;
+  font-size: 2rem;
+  cursor: pointer;
+  margin: 15px;
 }

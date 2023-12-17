@@ -1,19 +1,24 @@
 // prettier-ignore
-import { player, drawPlayer, updatePlayerPosition, updateMousePosition, updateBullets } from "./player.js";
+import { player, drawPlayer, updatePlayerPosition, updateMousePosition, updateBullets, drawBullet } from "./player.js";
 // prettier-ignore
-import {keyPressed, keyReleased, mousePressed, mouseReleased } from "./eventListeners.js";
+import {keyPressed, keyReleased, mousePressed, mouseReleased } from "./movement.js";
 // prettier-ignore
 import { enemies,createEnemy, drawEnemy, enemyMovement, checkCollision } from "./enemy.js";
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
+const Startmenu = document.getElementById("Startmenu");
+const startKnapp = document.getElementById("startKnapp");
+
 const gameOver = document.getElementById("game-over");
 const restartBtn = document.getElementById("restart-btn");
+const newGameBtn = document.getElementById("new-game-btn");
 
 const normalButton = document.querySelector("#normal");
 const hardButton = document.querySelector("#hard");
 const extremeButton = document.querySelector("#extreme");
+const playerNameField = document.querySelector("#player-name");
 
 let normalLevel = false;
 let hardLevel = false;
@@ -72,7 +77,7 @@ extremeButton.addEventListener("click", () => {
 
 let lastTime;
 
-function startingscreen() {
+function startingScreen() {
   ctx.fillStyle = "green";
   ctx.font = "50px sans-serif";
   ctx.fillText("¡Zombie Hunter!", canvas.width / 3 - 15, 150);
@@ -83,40 +88,45 @@ function startingscreen() {
     250
   );
 
-  document.addEventListener("DOMContentLoaded", function () {
-    const Startmenu = document.getElementById("Startmenu");
-    const startKnapp = document.getElementById("startKnapp");
-    startKnapp.addEventListener("click", () => {
+  startKnapp.addEventListener("click", () => {
+    let playerName = playerNameField.value;
+
+    if (playerName === "") {
+      alert("You must choose a name!");
+      return;
+    } else {
       if (normalLevel == false && hardLevel == false && extremeLevel == false) {
-        alert("You must choose a difficulty!");
+        alert("Your must choose a difficulty");
         return;
       }
-      document.addEventListener("mousedown", mousePressed);
-      document.addEventListener("mouseup", mouseReleased);
-      document.addEventListener("mousemove", updateMousePosition);
-      document.addEventListener("keydown", keyPressed);
-      document.addEventListener("keyup", keyReleased);
+    }
 
-      Startmenu.style.display = "none";
-      canvas.style.display = "block";
+    document.addEventListener("mousedown", mousePressed);
+    document.addEventListener("mouseup", mouseReleased);
+    document.addEventListener("mousemove", updateMousePosition);
+    document.addEventListener("keydown", keyPressed);
+    document.addEventListener("keyup", keyReleased);
 
-      if (normalLevel) {
-        player.hp = 100;
-      }
-      if (hardLevel) {
-        player.hp = 50;
-      }
-      if (extremeLevel) {
-        player.hp = 10;
-      }
+    Startmenu.style.display = "none";
+    canvas.style.display = "block";
 
-      gameLoop();
-      createEnemy(5);
-    });
+    if (normalLevel) {
+      player.hp = 100;
+    }
+    if (hardLevel) {
+      player.hp = 50;
+    }
+    if (extremeLevel) {
+      player.hp = 10;
+    }
+
+    initGame();
+    createEnemy(5);
   });
 }
 
 function gameOverMenu() {
+  let playerName = playerNameField.value;
   document.removeEventListener("mousemove", updateMousePosition);
   document.removeEventListener("keydown", keyPressed);
   document.removeEventListener("keyup", keyReleased);
@@ -133,11 +143,24 @@ function gameOverMenu() {
   ctx.fillStyle = "green";
 
   ctx.fillText(
-    "Game Over! You scored " +
-      player.scoreValue +
-      " points! Press Restart to play again!",
-    canvas.width / 4 - 110,
-    canvas.height / 2 - 50
+    "Game Over " + playerName + "!",
+    canvas.width / 3,
+    canvas.height / 3 - 130
+  );
+  ctx.fillText(
+    "Your final score is: " + player.scoreValue + ".",
+    canvas.width / 3,
+    canvas.height / 3 - 100
+  );
+  ctx.fillText(
+    "Press Restart Game to play again as " + playerName + ".",
+    canvas.width / 3,
+    canvas.height / 3 - 70
+  );
+  ctx.fillText(
+    "Press New Game to start a new game",
+    canvas.width / 3,
+    canvas.height / 3 - 40
   );
 
   enemies.length = 0;
@@ -167,6 +190,36 @@ function gameOverMenu() {
 
     createEnemy(5);
   });
+
+  newGameBtn.addEventListener("click", function () {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    gameOver.style.display = "none";
+
+    Startmenu.style.display = "flex";
+
+    if (normalLevel) {
+      player.hp = 100;
+    }
+    if (hardLevel) {
+      player.hp = 50;
+    }
+    if (extremeLevel) {
+      player.hp = 10;
+    }
+
+    player.scoreValue = 0;
+    playerNameField.value = "";
+    enemies.length = 0;
+    normalButton.classList.remove("normal-level");
+    hardButton.classList.remove("hard-level");
+    extremeButton.classList.remove("extreme-level");
+
+    normalLevel = false;
+    hardLevel = false;
+    extremeLevel = false;
+
+    startingScreen();
+  });
 }
 
 function checkPoints() {
@@ -189,23 +242,28 @@ function checkPoints() {
   }
 }
 
-function gameLoop() {
+function initGame() {
   let now = Date.now();
   let deltaTime = (now - lastTime) / 1000;
   lastTime = now;
 
-  updatePlayerPosition(ctx);
+  updatePlayerPosition(deltaTime);
   drawPlayer(ctx);
   drawEnemy(ctx);
   enemyMovement(deltaTime, ctx);
   checkCollision();
   checkPoints();
+  drawBullet(ctx, deltaTime);
   updateBullets();
-
-  if (player.hp === 0) {
-    gameOverMenu();
-  }
 
   requestAnimationFrame(gameLoop);
 }
-startingscreen();
+
+function gameLoop() {
+  initGame();
+  if (player.hp === 0) {
+    gameOverMenu();
+    return;
+  }
+}
+startingScreen();
