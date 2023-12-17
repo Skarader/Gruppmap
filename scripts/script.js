@@ -120,6 +120,7 @@ function startingScreen() {
       player.hp = 10;
     }
 
+    enemies.length = 0;
     initGame();
     createEnemy(5);
   });
@@ -188,6 +189,7 @@ function gameOverMenu() {
 
     enemies.length = 0;
 
+    initGame();
     createEnemy(5);
   });
 
@@ -260,10 +262,10 @@ function initGame() {
 }
 
 function gameLoop() {
-  initGame();
   if (player.hp === 0) {
     gameOverMenu();
     return;
   }
+  initGame();
 }
 startingScreen();
