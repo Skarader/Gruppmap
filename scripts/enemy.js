@@ -2,18 +2,19 @@ import { player } from "./player.js";
 
 let enemies = [];
 let enemyImg;
+const hurtFlash = document.getElementById("hurt");
 
 function createEnemy(amount) {
   for (let i = 0; i < amount; i++) {
     let xPosition;
     if (Math.random() < 0.5) {
-      xPosition = Math.random() < 0.5 ? -50 : 1050;
+      xPosition = Math.random() < 0.5 ? -50 : 1250;
     } else {
       xPosition = Math.random() * canvas.width;
     }
 
     let yPosition;
-    if (xPosition > -50 && xPosition < 1050) {
+    if (xPosition > -50 && xPosition < 1250) {
       yPosition = Math.random() < 0.5 ? -50 : 850;
     } else {
       yPosition = Math.random() * (canvas.height - 50);
@@ -22,8 +23,8 @@ function createEnemy(amount) {
     const newEnemy = {
       x: xPosition,
       y: yPosition,
-      width: 40,
-      height: 40,
+      width: 20,
+      height: 20,
       speed: 50,
     };
     enemies.push(newEnemy);
@@ -38,11 +39,10 @@ function drawEnemy(ctx) {
   //ctx.drawImage(enemyImg, enemy.x, enemy.y, enemy.width, enemy.height);
 
   // }
-  ctx.fillStyle = "black";
+  ctx.fillStyle = "white";
   ctx.font = "30px serif";
   ctx.fillText("Score: " + player.scoreValue, 10, 60);
 
-  ctx.fillStyle = "black";
   ctx.font = "30px serif";
   ctx.fillText("Hp: " + player.hp, 10, 90);
 }
@@ -80,7 +80,7 @@ function enemyMovement(deltaTime, ctx) {
   }
 }
 
-function checkCollision() {
+function checkCollision(ctx) {
   for (let i = 0; i < enemies.length; i++) {
     const enemy = enemies[i];
 
@@ -98,7 +98,19 @@ function checkCollision() {
       dmgSound.addEventListener("canplaythrough", function () {
         dmgSound.play();
       });
+
+      /*setTimeout(() => {
+        console.log("yes");
+        ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        setTimeout(() => {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }, 200);
+      });*/
+
       player.hp -= 10;
+      hurtFlash.style.display = "block";
 
       createEnemy(1);
     }
@@ -164,4 +176,5 @@ export {
   checkCollision,
   resolveEnemyOverlap,
   enemies,
+  hurtFlash,
 };

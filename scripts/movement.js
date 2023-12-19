@@ -62,7 +62,7 @@ function mousePressed(e) {
     player.shot = true;
 
     let gunSound = new Audio("Sound/gunSound.mp3");
-    gunSound.volume = 0.2;
+    gunSound.volume = 0.1;
     gunSound.addEventListener("canplaythrough", function () {
       gunSound.play();
     });

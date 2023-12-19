@@ -3,7 +3,7 @@ import { player, drawPlayer, updatePlayerPosition, updateMousePosition, updateBu
 // prettier-ignore
 import {keyPressed, keyReleased, mousePressed, mouseReleased } from "./movement.js";
 // prettier-ignore
-import { enemies,createEnemy, drawEnemy, enemyMovement, checkCollision } from "./enemy.js";
+import { enemies,createEnemy, drawEnemy, enemyMovement, checkCollision, hurtFlash } from "./enemy.js";
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
@@ -20,9 +20,35 @@ const hardButton = document.querySelector("#hard");
 const extremeButton = document.querySelector("#extreme");
 const playerNameField = document.querySelector("#player-name");
 
+let animationId;
+
 let normalLevel = false;
 let hardLevel = false;
 let extremeLevel = false;
+
+//menuimage
+
+let menuimg = new Image();
+menuimg.src = "./pictures/Menubackgroundimage.jpeg";
+menuimg.onload = function () {
+  ctx.drawImage(menuimg, 0, 0, canvas.width, canvas.height);
+  if (menuimg.onload) {
+    return;
+  }
+};
+
+// Background music
+let backgroundMusic = new Audio("./Sound/music.mp3");
+backgroundMusic.volume = 0.2;
+let musicStartTime = 1.7;
+backgroundMusic.currentTime = musicStartTime;
+
+//Img overlay
+let gradient = new Image();
+gradient.src = "./pictures/BG2.png";
+function gradientOverlay() {
+  ctx.drawImage(gradient, 0, 0, canvas.width, canvas.height);
+}
 
 normalButton.addEventListener("click", () => {
   if (normalLevel == false) {
@@ -78,24 +104,30 @@ extremeButton.addEventListener("click", () => {
 let lastTime;
 
 function startingScreen() {
-  ctx.fillStyle = "green";
+  /*
+  ctx.fillStyle = "white";
   ctx.font = "50px sans-serif";
-  ctx.fillText("¡Zombie Hunter!", canvas.width / 3 - 15, 150);
+  ctx.fillText("¡Zombie Hunter!", canvas.width / 3 + 15, 150);
   ctx.font = "28px times-new-roman";
   ctx.fillText(
     "Use arrows or wasd to move your character, use the mouse to aim and shoot zombies",
-    25,
+    100,
     250
   );
+  */
 
   startKnapp.addEventListener("click", () => {
+    backgroundMusic.currentTime = musicStartTime;
+    backgroundMusic.play();
     let playerName = playerNameField.value;
 
     if (playerName === "") {
+      backgroundMusic.pause();
       alert("You must choose a name!");
       return;
     } else {
       if (normalLevel == false && hardLevel == false && extremeLevel == false) {
+        backgroundMusic.pause();
         alert("Your must choose a difficulty");
         return;
       }
@@ -121,13 +153,16 @@ function startingScreen() {
     }
 
     enemies.length = 0;
+
     initGame();
-    createEnemy(5);
+    createEnemy(15);
   });
 }
 
 function gameOverMenu() {
+  backgroundMusic.pause();
   let playerName = playerNameField.value;
+
   document.removeEventListener("mousemove", updateMousePosition);
   document.removeEventListener("keydown", keyPressed);
   document.removeEventListener("keyup", keyReleased);
@@ -141,7 +176,7 @@ function gameOverMenu() {
   player.left = false;
   player.right = false;
 
-  ctx.fillStyle = "green";
+  ctx.fillStyle = "white";
 
   ctx.fillText(
     "Game Over " + playerName + "!",
@@ -168,6 +203,9 @@ function gameOverMenu() {
   player.bullets = [];
   gameOver.style.display = "flex";
   restartBtn.addEventListener("click", function () {
+    backgroundMusic.currentTime = musicStartTime;
+    backgroundMusic.play();
+
     document.addEventListener("mousemove", updateMousePosition);
     document.addEventListener("keydown", keyPressed);
     document.addEventListener("keyup", keyReleased);
@@ -195,6 +233,7 @@ function gameOverMenu() {
 
   newGameBtn.addEventListener("click", function () {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(menuimg, 0, 0, canvas.width, canvas.height);
     gameOver.style.display = "none";
 
     Startmenu.style.display = "flex";
@@ -215,11 +254,9 @@ function gameOverMenu() {
     normalButton.classList.remove("normal-level");
     hardButton.classList.remove("hard-level");
     extremeButton.classList.remove("extreme-level");
-
     normalLevel = false;
     hardLevel = false;
     extremeLevel = false;
-
     startingScreen();
   });
 }
@@ -228,19 +265,29 @@ function checkPoints() {
   for (const enemy of enemies) {
     if (player.scoreValue >= 5 && player.scoreValue < 10) {
       enemy.speed = 100;
-    } else if (player.scoreValue >= 10 && player.scoreValue < 20) {
+    } else if (player.scoreValue > 10 && player.scoreValue < 20) {
+      enemy.speed = 150;
+    } else if (player.scoreValue > 20 && player.scoreValue < 30) {
       enemy.speed = 200;
-    } else if (player.scoreValue >= 20 && player.scoreValue < 30) {
+    } else if (player.scoreValue >= 30 && normalLevel) {
       enemy.speed = 300;
-    } else if (player.scoreValue >= 30 && player.scoreValue < 40) {
+    } else if (player.scoreValue >= 30 && hardLevel) {
       enemy.speed = 350;
-    } else if (player.scoreValue >= 40 && player.scoreValue < 50) {
+    } else if (player.scoreValue >= 30 && extremeLevel) {
       enemy.speed = 400;
-    } else if (player.scoreValue >= 50 && player.scoreValue < 60) {
-      enemy.speed = 450;
-    } else if (player.scoreValue >= 60) {
-      enemy.speed = 500;
     }
+  }
+}
+
+function spawnEnemyRandom() {
+  function spawn() {
+    createEnemy(1);
+  }
+
+  let randomNmber = Math.random() * 1000;
+
+  if (randomNmber >= 995) {
+    spawn();
   }
 }
 
@@ -249,23 +296,42 @@ function initGame() {
   let deltaTime = (now - lastTime) / 1000;
   lastTime = now;
 
+  hurtFlash.style.display = "none";
+
   updatePlayerPosition(deltaTime);
   drawPlayer(ctx);
   drawEnemy(ctx);
   enemyMovement(deltaTime, ctx);
-  checkCollision();
-  checkPoints();
+  checkCollision(ctx);
   drawBullet(ctx, deltaTime);
   updateBullets();
+  spawnEnemyRandom();
+  gradientOverlay();
+  checkPoints();
+  cancelAnimationFrame(animationId);
 
-  requestAnimationFrame(gameLoop);
+  animationId = requestAnimationFrame(gameLoop);
 }
 
 function gameLoop() {
-  if (player.hp === 0) {
+  if (player.hp <= 0) {
+    player.hp = 0;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "white";
+    ctx.font = "30px serif";
+    ctx.fillText("Hp: " + player.hp, 10, 90);
+
+    ctx.font = "30px serif";
+    ctx.fillText("Score: " + player.scoreValue, 10, 60);
+
+    hurtFlash.style.display = "none";
     gameOverMenu();
     return;
   }
+
   initGame();
 }
+
 startingScreen();

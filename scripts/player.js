@@ -1,8 +1,8 @@
 const player = {
   x: 475,
   y: 375,
-  width: 50,
-  height: 50,
+  width: 40,
+  height: 40,
   left: false,
   right: false,
   up: false,
@@ -36,6 +36,13 @@ let mouseY = 0;
 */
 
 function drawPlayer(ctx) {
+  /*
+  if (damageFlash) {
+    ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
+  */
+
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   //player Img
@@ -94,13 +101,13 @@ function updateMousePosition(e) {
 }
 
 function updatePlayerPosition(deltaTime) {
-  if (player.up && player.y > player.height / 2 - 25)
+  if (player.up && player.y > player.height / 2 - 20)
     player.y -= player.speed * deltaTime;
-  if (player.down && player.y + player.height / 2 + 25 < canvas.height)
+  if (player.down && player.y + player.height / 2 + 20 < canvas.height)
     player.y += player.speed * deltaTime;
-  if (player.left && player.x > player.width / 2 - 25)
+  if (player.left && player.x > player.width / 2 - 20)
     player.x -= player.speed * deltaTime;
-  if (player.right && player.x + player.width / 2 + 25 < canvas.width)
+  if (player.right && player.x + player.width / 2 + 20 < canvas.width)
     player.x += player.speed * deltaTime;
 }
 
@@ -120,7 +127,7 @@ function drawBullet(ctx, deltaTime) {
     bullet.x += normalizedDirectionX * bullet.speed * deltaTime;
     bullet.y += normalizedDirectionY * bullet.speed * deltaTime;
 
-    ctx.fillStyle = bullet.color;
+    ctx.fillStyle = "red";
     ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
   });
   // const rotatedBulletX =
@@ -147,7 +154,6 @@ function shootbullet() {
 
   const offsetX = player.gunOffsetX;
   const offsetY = player.gunOffsetY;
-
   // Beräkna roterade offset-värden
   const rotatedOffsetX =
     offsetX * Math.cos(player.rotation) - offsetY * Math.sin(player.rotation);
