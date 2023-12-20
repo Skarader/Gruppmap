@@ -104,18 +104,6 @@ extremeButton.addEventListener("click", () => {
 let lastTime;
 
 function startingScreen() {
-  /*
-  ctx.fillStyle = "white";
-  ctx.font = "50px sans-serif";
-  ctx.fillText("¡Zombie Hunter!", canvas.width / 3 + 15, 150);
-  ctx.font = "28px times-new-roman";
-  ctx.fillText(
-    "Use arrows or wasd to move your character, use the mouse to aim and shoot zombies",
-    100,
-    250
-  );
-  */
-
   startKnapp.addEventListener("click", () => {
     backgroundMusic.currentTime = musicStartTime;
     backgroundMusic.play();

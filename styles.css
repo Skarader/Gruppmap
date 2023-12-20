@@ -60,21 +60,6 @@ body {
   font-weight: bold;
 }
 
-/*
-#title {
-  position: absolute;
-  text-align: center;
-  top: 100px;
-
-  font-family: "Dancing Script";
-  font-size: 5rem;
-
-  background: -webkit-linear-gradient(rgb(5, 230, 54), rgb(212, 4, 4));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-*/
-
 #player-name {
   position: relative;
   height: 3rem;

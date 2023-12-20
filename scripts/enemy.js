@@ -32,13 +32,9 @@ function createEnemy(amount) {
 }
 
 function drawEnemy(ctx) {
-  // for (const enemy of enemies) {
-  // draw emeny test
   enemyImg = new Image();
   enemyImg.src = "./pictures/Enemyimg.png";
-  //ctx.drawImage(enemyImg, enemy.x, enemy.y, enemy.width, enemy.height);
 
-  // }
   ctx.fillStyle = "white";
   ctx.font = "30px serif";
   ctx.fillText("Score: " + player.scoreValue, 10, 60);
@@ -61,9 +57,6 @@ function enemyMovement(deltaTime, ctx) {
       enemy.y += directionY * enemy.speed * deltaTime;
 
       let angle = Math.atan2(directionY, directionX);
-
-      //Behvös denna? (raden nedanför)
-      //let degrees = angle * (180/Math.PI);
 
       ctx.save();
       ctx.translate(enemy.x + enemy.width / 2, enemy.y + enemy.height / 2);
@@ -95,19 +88,7 @@ function checkCollision(ctx) {
       let dmgSound = new Audio();
       dmgSound.src = "/Sound/damageSound.mp3";
       dmgSound.volume = 0.2;
-      dmgSound.addEventListener("canplaythrough", function () {
-        dmgSound.play();
-      });
-
-      /*setTimeout(() => {
-        console.log("yes");
-        ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        setTimeout(() => {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-        }, 200);
-      });*/
+      dmgSound.play();
 
       player.hp -= 10;
       hurtFlash.style.display = "block";
