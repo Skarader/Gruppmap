@@ -216,7 +216,7 @@ function gameOverMenu() {
     enemies.length = 0;
 
     initGame();
-    createEnemy(5);
+    createEnemy(15);
   });
 
   newGameBtn.addEventListener("click", function () {
